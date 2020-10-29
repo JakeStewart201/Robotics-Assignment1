@@ -17,29 +17,17 @@ def update_scanner(data):
   left = 5.0;
   right = 5.0;
   ahead = 5.0;
-  leftc = 0;
-  rightc = 0;
-  aheadc = 0;
 
   for i, dist in enumerate(data.ranges, start = 1):
     angle = i / len(data.ranges)
     if (angle < 0.3):
       right = min(right, dist)
-      #right += dist
-      rightc += 1
     elif (angle < 0.7):
       ahead = min(ahead, dist)
-      #ahead += dist
-      aheadc += 1
     else:
       left = min(left, dist)
-      #left += dist
-      leftc += 1
 
   turn = 0
-  #left /= leftc
-  #ahead /= aheadc
-  #right /= rightc
   ahead += FORWARD_BIAS
 
   if (ahead <= TOO_CLOSE_TO_WALL):
