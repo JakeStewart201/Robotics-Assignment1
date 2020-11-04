@@ -1,4 +1,4 @@
-from geometry_msgs.msg import Pose, PoseArray, Quaternion, Pose2D, Twist
+from geometry_msgs.msg import Pose, PoseArray, Quaternion, Pose2D
 from pf_base import PFLocaliserBase
 import math
 import rospy
@@ -23,7 +23,6 @@ class PFLocaliser(PFLocaliserBase):
 	self.ODOM_TRANSLATION_NOISE = 0.1
 	self.ODOM_DRIFT_NOISE = 0.1
 	self.particle_weights = []
-	self.twist = Twist()
 	self.w_slow = 0.06
 	self.A_SLOW = 0.15
 	self.w_fast = 0.01
@@ -86,11 +85,6 @@ class PFLocaliser(PFLocaliserBase):
 	self.scan = scan
 	movement_particles = []
 
-        w = self.twist.angular.z
-        v = self.twist.linear.x
-	self.twist = Twist()
-	wv = math.sqrt(v * v + w * w)
-
 	dtime = rospy.Time.now().to_sec() - self.last_time.to_sec()
 	self.last_time = rospy.Time.now()
 
@@ -133,7 +127,6 @@ class PFLocaliser(PFLocaliserBase):
 			
 		particlecloudnew.poses.append(pose)
 		new_weights.append(weight)
-	#if wv > 0.03: #Only update if movement is occured to avoid focusing on slightly higher poses
 	self.particlecloud.poses = particlecloudnew.poses
 	self.weights = new_weights
 
@@ -200,4 +193,3 @@ class PFLocaliser(PFLocaliserBase):
             | (geometry_msgs.msg.Pose) robot's estimated pose.
          """
         return self.weighted_zscore()
-
